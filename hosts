@@ -1,0 +1,5 @@
+[database_servers]
+vm2 ansible_host=10.0.1.12
+
+[dbadmin_servers]
+vm3 ansible_host=10.0.1.13

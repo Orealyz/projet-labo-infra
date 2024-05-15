@@ -1,0 +1,30 @@
+---
+- name: Configure dbadmin server
+  hosts: dbadmin_servers
+  become: true
+  tasks:
+    - name: Install pgadmin4 repository
+      shell: sudo rpm -i https://ftp.postgresql.org/pub/pgadmin/pgadmin4/yum/pgadmin4-redhat-repo-2-1.noarch.rpm
+
+    - name: Install pgadmin4 package
+      dnf:
+        name: pgadmin4
+        state: present
+        update_cache: yes
+        skip_broken: yes
+        installroot: /
+        disable_gpg_check: yes
+
+    - name: Start and enable firewalld service
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Add firewall rule for PgAdmin web access port
+      firewalld:
+        port: 8043/tcp
+        state: enabled
+
+    - name: Run pgadmin4 setup-web.sh script
+      shell: sudo /usr/pgadmin4/bin/setup-web.sh --yes
